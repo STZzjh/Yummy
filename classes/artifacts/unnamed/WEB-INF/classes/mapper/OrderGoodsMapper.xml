@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zjh.yummy.dao.OrderGoodsDao" >
+
+    <resultMap id="BaseResultMap" type="com.zjh.yummy.entity.OrderGoods" >
+
+        <id column="id" property="id" jdbcType="INTEGER" />
+        <result column="order_no" property="orderNo" jdbcType="VARCHAR" />
+        <result column="restaurant_id" property="restaurantId" jdbcType="INTEGER" />
+        <result column="restaurant_name" property="restaurantName" jdbcType="VARCHAR" />
+        <result column="user_id" property="userId" jdbcType="INTEGER" />
+        <result column="user_name" property="userName" jdbcType="VARCHAR" />
+        <result column="goods_id" property="goodsId" jdbcType="INTEGER" />
+        <result column="goods_name" property="goodsName" jdbcType="VARCHAR" />
+        <result column="price" property="price" jdbcType="NUMERIC" />
+        <result column="user_address_id" property="userAddressId" jdbcType="INTEGER" />
+        <result column="user_address_name" property="userAddressName" jdbcType="VARCHAR" />
+        <result column="status" property="status" jdbcType="VARCHAR" />
+        <result column="user_in" property="userIn" jdbcType="NUMERIC" />
+        <result column="admin_in" property="adminIn" jdbcType="NUMERIC" />
+        <result column="restaurant_in" property="restaurantIn" jdbcType="NUMERIC" />
+        <result column="subscribe_time" property="subscribeTime" jdbcType="TIMESTAMP" />
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    </resultMap>
+
+    <sql id="Example_Where_Clause" >
+        <where >
+            <foreach collection="conditionList" item="item" separator="and" >
+                ${item.condition} <if test="item.value !=null">#{item.value}</if>
+            </foreach>
+        </where>
+    </sql>
+
+    <select id="getById" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+        select * from `order_goods` where `id` = #{id,jdbcType=INTEGER}
+    </select>
+
+    <insert id="insert" parameterType="com.zjh.yummy.entity.OrderGoods" >
+        insert into `order_goods` (`id`,`order_no`,`restaurant_id`,`restaurant_name`,`user_id`,`user_name`,`goods_id`,`goods_name`,`price`,`user_address_id`,`user_address_name`,`status`,`user_in`,`admin_in`,`restaurant_in`,`subscribe_time`,`create_time`)
+        values (#{id,jdbcType=INTEGER},#{orderNo,jdbcType=VARCHAR},#{restaurantId,jdbcType=INTEGER},#{restaurantName,jdbcType=VARCHAR},#{userId,jdbcType=INTEGER},#{userName,jdbcType=VARCHAR},#{goodsId,jdbcType=INTEGER},#{goodsName,jdbcType=VARCHAR},#{price,jdbcType=NUMERIC},#{userAddressId,jdbcType=INTEGER},#{userAddressName,jdbcType=VARCHAR},#{status,jdbcType=VARCHAR},#{userIn,jdbcType=NUMERIC},#{adminIn,jdbcType=NUMERIC},#{restaurantIn,jdbcType=NUMERIC},#{subscribeTime,jdbcType=TIMESTAMP},#{createTime,jdbcType=TIMESTAMP})
+    </insert>
+
+    <delete id="delete" parameterType="java.lang.Integer" >
+        delete from `order_goods` where `id` = #{id,jdbcType=INTEGER}
+    </delete>
+
+    <update id="update" parameterType="com.zjh.yummy.entity.OrderGoods" >
+        update `order_goods`
+        <set >
+            <if test="orderNo != null" >
+                `order_no` = #{orderNo,jdbcType=VARCHAR},
+            </if>
+            <if test="restaurantId != null" >
+                `restaurant_id` = #{restaurantId,jdbcType=INTEGER},
+            </if>
+            <if test="restaurantName != null" >
+                `restaurant_name` = #{restaurantName,jdbcType=VARCHAR},
+            </if>
+            <if test="userId != null" >
+                `user_id` = #{userId,jdbcType=INTEGER},
+            </if>
+            <if test="userName != null" >
+                `user_name` = #{userName,jdbcType=VARCHAR},
+            </if>
+            <if test="goodsId != null" >
+                `goods_id` = #{goodsId,jdbcType=INTEGER},
+            </if>
+            <if test="goodsName != null" >
+                `goods_name` = #{goodsName,jdbcType=VARCHAR},
+            </if>
+            <if test="price != null" >
+                `price` = #{price,jdbcType=NUMERIC},
+            </if>
+            <if test="userAddressId != null" >
+                `user_address_id` = #{userAddressId,jdbcType=INTEGER},
+            </if>
+            <if test="userAddressName != null" >
+                `user_address_name` = #{userAddressName,jdbcType=VARCHAR},
+            </if>
+            <if test="status != null" >
+                `status` = #{status,jdbcType=VARCHAR},
+            </if>
+            <if test="userIn != null" >
+                `user_in` = #{userIn,jdbcType=NUMERIC},
+            </if>
+            <if test="adminIn != null" >
+                `admin_in` = #{adminIn,jdbcType=NUMERIC},
+            </if>
+            <if test="restaurantIn != null" >
+                `restaurant_in` = #{restaurantIn,jdbcType=NUMERIC},
+            </if>
+            <if test="subscribeTime != null" >
+                `subscribe_time` = #{subscribeTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="createTime != null" >
+                `create_time` = #{createTime,jdbcType=TIMESTAMP},
+            </if>
+        </set>
+        where `id` = #{id,jdbcType=INTEGER}
+    </update>
+
+    <select id="list" resultMap="BaseResultMap" parameterType="com.zjh.yummy.common.db.SimpleQuery" >
+        select * from `order_goods`
+        <if test="_parameter != null" >
+            <include refid="Example_Where_Clause" />
+        </if>
+        <if test="order != null and sort != null" >
+            order by `${sort}` ${order}
+        </if>
+        <if test="offset != null and limit !=null" >
+            limit ${offset},${limit}
+        </if>
+    </select>
+
+    <select id="count" parameterType="com.zjh.yummy.common.db.SimpleQuery" resultType="java.lang.Integer" >
+        select count(*) from `order_goods`
+        <if test="_parameter != null" >
+            <include refid="Example_Where_Clause" />
+        </if>
+    </select>
+
+    <select id="listByJoin" resultMap="BaseResultMap" parameterType="com.zjh.yummy.common.db.SimpleQuery" >
+        select * from `order_goods`
+        <if test="_parameter != null" >
+            <include refid="Example_Where_Clause" />
+        </if>
+        <if test="order != null and sort != null" >
+            order by `${sort}` ${order}
+        </if>
+        <if test="offset != null and limit !=null" >
+            limit ${offset},${limit}
+        </if>
+    </select>
+
+    <select id="countByJoin" parameterType="com.zjh.yummy.common.db.SimpleQuery" resultType="java.lang.Integer" >
+        select count(*) from `order_goods`
+        <if test="_parameter != null" >
+            <include refid="Example_Where_Clause" />
+        </if>
+    </select>
+
+    <select id="restaurantCount" resultMap="BaseResultMap" parameterType="com.zjh.yummy.common.db.SimpleQuery" >
+        select restaurant_id,SUM(restaurant_in) restaurant_in from order_goods where restaurant_id is not null GROUP BY restaurant_id;
+    </select>
+
+    <select id="userCount" resultMap="BaseResultMap" parameterType="com.zjh.yummy.common.db.SimpleQuery" >
+        select user_id,SUM(price) price,SUM(user_in) user_in from order_goods GROUP BY user_id;
+    </select>
+
+    <select id="adminCount" resultType="java.math.BigDecimal" parameterType="com.zjh.yummy.common.db.SimpleQuery" >
+        select SUM(admin_in) admin_in from order_goods ;
+    </select>
+
+</mapper>

@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:task="http://www.springframework.org/schema/task"
+       xsi:schemaLocation=
+               "http://www.springframework.org/schema/beans
+                http://www.springframework.org/schema/beans/spring-beans-4.1.xsd
+                http://www.springframework.org/schema/mvc
+                http://www.springframework.org/schema/mvc/spring-mvc.xsd
+                http://www.springframework.org/schema/context
+                http://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task.xsd">
+    <!-- 配置 SpringMVC -->
+    <!-- 1、开启 SpringMVC 注解模式 -->
+    <!-- 简化配置：
+    1.自动注册 DefaultAnnotationHandlerMapping , AnnotrationMethodHandlerAdapter
+    2.默认提供一系列功能：数据绑定，数字和日期的转换 format @NumberFormat , @DataTImeFormat ,xml ,json 默认读写支持-->
+    <mvc:annotation-driven conversion-service="conversionService" ignore-default-model-on-redirect="true">
+            <mvc:message-converters>
+                <bean class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter" >
+                    <property name="objectMapper">
+                        <bean class="com.fasterxml.jackson.databind.ObjectMapper">
+                            <property name="dateFormat">
+                                <bean class="java.text.SimpleDateFormat">
+                                    <!-- 设置全局返回JSON到前端时日期格式化 -->
+                                    <constructor-arg type="java.lang.String" value="yyyy-MM-dd HH:mm:ss"/>
+                                </bean>
+                            </property>
+                        </bean>
+                    </property>
+                </bean>
+            </mvc:message-converters>
+    </mvc:annotation-driven>
+
+    <!-- 日期转换 -->
+    <bean id="conversionService" class="org.springframework.format.support.FormattingConversionServiceFactoryBean">
+        <!-- 转换器 -->
+        <property name="converters">
+            <set>
+                <!-- 日期类型转换 -->
+                <bean class="com.zjh.yummy.common.web.StringToDateConvert"/>
+            </set>
+        </property>
+    </bean>
+
+
+    <!-- servlet-mapping 映射路径："/" -->
+    <!-- 2、静态资源默认 servlet 配置
+            1.加入对静态资源的处理：js , gif , png....
+            2.允许使用 "/" 做整体映射-->
+    <mvc:default-servlet-handler/>
+
+    <mvc:interceptors>
+        <mvc:interceptor>
+            <!--
+                /**的意思是所有文件夹及里面的子文件夹
+                /*是所有文件夹，不含子文件夹
+                /是web项目的根目录
+              -->
+            <mvc:mapping path="/admin/**" />
+            <mvc:mapping path="/user/**" />
+            <mvc:mapping path="/restaurant/**" />
+            <bean id="commonInterceptor" class="com.zjh.yummy.common.web.LoginInterceptor"></bean> <!--这个类就是我们自定义的Interceptor -->
+        </mvc:interceptor>
+        <!-- 当设置多个拦截器时，先按顺序调用preHandle方法，然后逆序调用每个拦截器的postHandle和afterCompletion方法  -->
+    </mvc:interceptors>
+
+    <!-- 3、配置 jsp 显示 ViewResolver -->
+    <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+        <property name="viewClass" value="org.springframework.web.servlet.view.JstlView"/>
+        <property name="prefix" value="/WEB-INF/view/"/>
+        <property name="suffix" value=".jsp"/>
+    </bean>
+
+    <!--文件上传配置-->
+    <bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+        <property name="maxUploadSize"><value>100000000</value></property>
+        <property name="defaultEncoding"><value>UTF-8</value></property>
+    </bean>
+
+    <task:annotation-driven/>
+
+    <!-- 4、扫描 controller service 相关的 bean -->
+    <context:component-scan base-package="com.zjh.yummy.**"/>
+</beans>

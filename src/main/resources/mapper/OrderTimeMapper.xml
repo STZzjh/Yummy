@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zjh.yummy.dao.OrderTimeDao" >
+
+    <resultMap id="BaseResultMap" type="com.zjh.yummy.entity.OrderTime" >
+
+        <id column="id" property="id" jdbcType="INTEGER" />
+        <result column="order_no" property="orderNo" jdbcType="VARCHAR" />
+        <result column="status" property="status" jdbcType="VARCHAR" />
+        <result column="status_time" property="statusTime" jdbcType="TIMESTAMP" />
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    </resultMap>
+
+    <sql id="Example_Where_Clause" >
+        <where >
+            <foreach collection="conditionList" item="item" separator="and" >
+                ${item.condition} #{item.value}
+            </foreach>
+        </where>
+    </sql>
+
+    <select id="getById" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+        select * from `order_time` where `id` = #{id,jdbcType=INTEGER}
+    </select>
+
+    <insert id="insert" parameterType="com.zjh.yummy.entity.OrderTime" >
+        insert into `order_time` (`id`,`order_no`,`status`,`status_time`,`create_time`)
+        values (#{id,jdbcType=INTEGER},#{orderNo,jdbcType=VARCHAR},#{status,jdbcType=VARCHAR},#{statusTime,jdbcType=TIMESTAMP},#{createTime,jdbcType=TIMESTAMP})
+    </insert>
+
+    <delete id="delete" parameterType="java.lang.Integer" >
+        delete from `order_time` where `id` = #{id,jdbcType=INTEGER}
+    </delete>
+
+    <update id="update" parameterType="com.zjh.yummy.entity.OrderTime" >
+        update `order_time`
+        <set >
+            <if test="orderNo != null" >
+                `order_no` = #{orderNo,jdbcType=VARCHAR},
+            </if>
+            <if test="status != null" >
+                `status` = #{status,jdbcType=VARCHAR},
+            </if>
+            <if test="statusTime != null" >
+                `status_time` = #{statusTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="createTime != null" >
+                `create_time` = #{createTime,jdbcType=TIMESTAMP},
+            </if>
+        </set>
+        where `id` = #{id,jdbcType=INTEGER}
+    </update>
+
+    <select id="list" resultMap="BaseResultMap" parameterType="com.zjh.yummy.common.db.SimpleQuery" >
+        select * from `order_time`
+        <if test="_parameter != null" >
+            <include refid="Example_Where_Clause" />
+        </if>
+        <if test="order != null and sort != null" >
+            order by `${sort}` ${order}
+        </if>
+        <if test="offset != null and limit !=null" >
+            limit ${offset},${limit}
+        </if>
+    </select>
+
+    <select id="count" parameterType="com.zjh.yummy.common.db.SimpleQuery" resultType="java.lang.Integer" >
+        select count(*) from `order_time`
+        <if test="_parameter != null" >
+            <include refid="Example_Where_Clause" />
+        </if>
+    </select>
+
+    <select id="listByJoin" resultMap="BaseResultMap" parameterType="com.zjh.yummy.common.db.SimpleQuery" >
+        select * from `order_time`
+        <if test="_parameter != null" >
+            <include refid="Example_Where_Clause" />
+        </if>
+        <if test="order != null and sort != null" >
+            order by `${sort}` ${order}
+        </if>
+        <if test="offset != null and limit !=null" >
+            limit ${offset},${limit}
+        </if>
+    </select>
+
+    <select id="countByJoin" parameterType="com.zjh.yummy.common.db.SimpleQuery" resultType="java.lang.Integer" >
+        select count(*) from `order_time`
+        <if test="_parameter != null" >
+            <include refid="Example_Where_Clause" />
+        </if>
+    </select>
+
+</mapper>
